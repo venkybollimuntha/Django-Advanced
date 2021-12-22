@@ -1,0 +1,99 @@
+ Django Relationships
+
+1. many to one
+2. Many to many
+3. one to one
+
+1. many to one: (ForeignKey)
+--------------
+one record of a model A is related to multiple records of another model B.
+
+eg: Song has many to one relationship with Album.
+
+Album can have many songs, but song cannot be part of many albums
+
+
+from django.db import models
+
+class Album(models.Model):
+	title = models.CharField(max_length = 100)
+    artist = models.CharField(max_length = 100)
+
+class Song(models.Model):
+    title = models.CharField(max_length = 100)
+    album = models.ForeignKey(Album, on_delete = models.CASCADE)
+
+
+2. many to many:  (ManyToManyField)
+-----------------
+ one record of model A is related to multiple records of another model B and vice-versa.
+
+ eg:
+ A model Book has many to many relationship with Author 
+
+
+
+from django.db import models
+  
+class Author(models.Model):
+    name = models.CharField(max_length = 100)
+    desc = models.TextField(max_length = 300)
+
+class Book(models.Model):
+    title = models.CharField(max_length = 100)
+    desc = models.TextField(max_length = 300)
+    authors = models.ManyToManyField(Author)
+
+
+3. one to one: (OneToOneField)
+-------------------------------
+
+Record of Model A related to exactly one record of another model B.
+
+from django.db import models
+  
+class Vehicle(models.Model):
+    reg_no = models.IntegerField()
+    owner = models.CharField(max_length = 100)
+  
+class Car(models.Model):
+    vehicle = models.OneToOneField(Vehicle, 
+          on_delete = models.CASCADE, primary_key = True)
+    car_model = models.CharField(max_length = 100)
+
+
+
+Data Integrity options:
+-----------------------
+1. on_delete = models.CASCADE
+2. on_delete = models.PROTECT
+3. on_delete = models.SET_NULL
+4. on_delete = models.SET_DEFAULT
+5. on_delete = models.SET()
+6. on_delete = models.DO_NOTHING
+
+
+1.on_delete = models.CASCADE:
+----------------------------
+This is the default value, automatically delete all related records when a record is deleted.
+
+2. on_delete = models.PROTECT:
+------------------------------
+It blocks the deletion of record having relation with other records. 
+
+3.on_delete = models.SET_NULL:
+-------------------------------
+It assign null to the relational field when a record is deleted, provide null=True
+
+4. on_delete = models.SET_DEFAULT:
+-----------------------------------
+It assign Default value to the relational field when a record is deleted, provided default value
+
+5.on_delete = models.SET():
+--------------------------
+It can either take a default value as parameter, or a callable(), the return value of which will be assigned to the field.
+
+6. on_delete = models.DO_NOTHING:
+---------------------------------
+Takes no action, its a bad practice to use this value.
+
